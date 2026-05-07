@@ -349,3 +349,24 @@ def observed_lya_profile(
         )
     else:
         return observed_lya_flux
+
+
+# Add the reconstructed Lya model to an observed spectrum
+def add_lya(obs_wavelength, obs_flux, obs_error, lya_model_wavelength,
+            lya_model_flux, lya_model_error):
+    """
+    Adds the reconstructed Lya model to an observed spectrum.
+
+    Parameters
+    ----------
+    obs_wavelength
+    obs_flux
+    obs_error
+    lya_model_wavelength
+    lya_model_flux
+    lya_model_error
+
+    Returns
+    -------
+
+    """
