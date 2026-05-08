@@ -711,3 +711,20 @@ def generate_spec_hlsp(
 
     hdul = fits.HDUList(hdu_list)
     hdul.writeto(output_dir + filename)
+
+
+# Mask geocoronal contamination
+def mask_contamination(wavelength_ranges, wavelength, flux, flux_error):
+    """
+
+    Parameters
+    ----------
+    wavelength_ranges
+    wavelength
+    flux
+    flux_error
+
+    Returns
+    -------
+
+    """
