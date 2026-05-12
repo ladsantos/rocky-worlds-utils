@@ -46,6 +46,11 @@ _KEY_LINE_CENTERS = [
     [1175, 1548.1, 1550.8, 1401.1],
     [1238.8, 1242.8, 1371.3, 1145.6],
 ]
+_GEOCORONA_LINE_CENTERS = [
+    1134.415, 1200.223, # N I Lines
+    1302.168, 1304.858, 1306.029,  # O I Lines
+    1215.6701  # H I line
+]
 _C_SPEED = c.c.to(u.km / u.s).value
 
 
@@ -714,17 +719,48 @@ def generate_spec_hlsp(
 
 
 # Mask geocoronal contamination
-def mask_contamination(wavelength_ranges, wavelength, flux, flux_error):
+def mask_contamination(wavelength, flux, flux_error, mask_width=3.0):
     """
+    Remove pixels that are contaminated by geocoronal emission from FUV spectra.
 
     Parameters
     ----------
-    wavelength_ranges
-    wavelength
-    flux
-    flux_error
+    wavelength : ``numpy.ndarray``
+        Array containing wavelengths in unit of Angstrom.
+
+    flux : ``numpy.ndarray``
+        Array containing fluxes in unit of erg/s/cm^2/Angstrom.
+
+    flux_error : ``numpy.ndarray``
+        Array containing flux uncertainties in erg/s/cm^2/Angstrom.
+
+    mask_width : ``float``, optional
+        Width of the mask for each geocoronal line in unit of Angstrom. Default
+        value is 3.0.
 
     Returns
     -------
+    wavelength_masked : ``numpy.ndarray``
+        Masked wavelength array.
 
+    flux_masked : ``numpy.ndarray``
+        Masked flux array.
+
+    flux_error_masked : ``numpy.ndarray``
+        Masked flux uncertainty array.
     """
+    # Figure out the wavelength ranges to mask
+    n_masks = len(_GEOCORONA_LINE_CENTERS) - 1  # We will not mask Lya
+    wl_centers = _GEOCORONA_LINE_CENTERS[:n_masks]
+    wl_ranges = [(wk - mask_width / 2, wk + mask_width / 2) for wk in wl_centers]
+
+    # Identify where these ranges are in the wavelength array
+    mask = np.zeros(wavelength.shape, dtype=bool)
+    for low, high in wl_ranges:
+        mask |= (wavelength >= low) & (wavelength <= high)
+
+    # Apply masks
+    wavelength_masked = wavelength[~mask]
+    flux_masked = flux[~mask]
+    flux_error_masked = flux_error[~mask]
+    return wavelength_masked, flux_masked, flux_error_masked

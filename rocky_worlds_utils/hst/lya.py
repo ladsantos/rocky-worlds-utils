@@ -363,21 +363,43 @@ def add_lya(obs_wavelength, obs_flux, obs_error, lya_model_wavelength,
     Parameters
     ----------
     obs_wavelength : ``numpy.ndarray``
+        Array containing observed wavelengths in unit of Angstrom.
+
     obs_flux : ``numpy.ndarray``
+        Array containing observed fluxes in unit of erg/s/cm^2/Angstrom.
+
     obs_error : ``numpy.ndarray``
+        Array containing observed flux uncertainties in unit of
+        erg/s/cm^2/Angstrom.
+
     lya_model_wavelength : ``numpy.ndarray``
+        Array containing model wavelengths in unit of Angstrom.
+
     lya_model_flux : ``numpy.ndarray``
+        Array containing model fluxes in unit of erg/s/cm^2/Angstrom.
+
     lya_model_error : ``numpy.ndarray``
+        Array containing mode flux uncertainties in unit of
+        erg/s/cm^2/Angstrom.
+
     line_width : ``float``, optional
+        Width of the Lya line to replace in the observed spectrum. Default value
+        is 4.0.
 
     Returns
     -------
+    updated_flux : ``numpy.ndarray``
+        Array containing the updated spectrum in unit of erg/s/cm^2/Angstrom.
 
+    updated_error : ``numpy.ndarray``
+        Array containing the updated spectrum uncertainties in unit of
+        erg/s/cm^2/Angstrom.
     """
     flux_unit = u.erg / (u.s * u.cm ** 2 * u.AA)
     wave_unit = u.AA
     wavelength_window = 1215.6702 + np.array([-line_width / 2, line_width / 2])
-    ind = np.where((obs_wavelength > wavelength_window[0]) & (obs_wavelength < wavelength_window[1]))
+    ind = np.where((obs_wavelength > wavelength_window[0]) &
+                   (obs_wavelength < wavelength_window[1]))
 
     # Bin the model to the observed wavelength grid while conserving the flux
     # using specutils
@@ -386,9 +408,11 @@ def add_lya(obs_wavelength, obs_flux, obs_error, lya_model_wavelength,
                           flux=lya_model_flux * flux_unit,
                           uncertainty=model_uncertainty)
     resampler = FluxConservingResampler()
-    new_model_spec = resampler(input_model_spec, obs_wavelength[ind] * wave_unit)
+    new_model_spec = resampler(input_model_spec,
+                               obs_wavelength[ind] * wave_unit)
     new_model_flux = new_model_spec.flux.value
-    new_model_variance = (1 / new_model_spec.uncertainty.array) + obs_error[ind] ** 2
+    new_model_variance = ((1 / new_model_spec.uncertainty.array)
+                          + obs_error[ind] ** 2)
     new_model_error = np.sqrt(new_model_variance)
 
     # Stitch the model Lya to the observed spectrum
