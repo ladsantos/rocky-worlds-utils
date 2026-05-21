@@ -189,6 +189,7 @@ def extract(
     prefix,
     output_dir,
     a2center,
+    background_subtract=True,
     extraction_size=11,
     background1_size=5,
     background2_size=5,
@@ -220,6 +221,9 @@ def extract(
     extraction_size : ``float``, optional
         Height of the spectral extraction in units of pixels. Default value is
         11.
+
+    background_subtract : ``bool``, optional
+        Sets whether to apply background subtraction. Default value is True.
 
     background1_size : ``float``, optional
         Height of the lower background extraction in units of pixels. Default
@@ -268,6 +272,11 @@ def extract(
     else:
         pass
 
+    if background_subtract:
+        background_switch = "perform"
+    else:
+        background_switch = "omit"
+
     # Process the time series
     stistools.x1d.x1d(
         input_file,
@@ -277,7 +286,7 @@ def extract(
         # trace location
         a2center=a2center,
         extrsize=extraction_size,
-        backcorr="perform",
+        backcorr=background_switch,
         bk1size=background1_size,
         bk2size=background2_size,
         bk1offst=background1_offset,
