@@ -190,12 +190,12 @@ def extract(
     output_dir,
     a2center,
     background_subtract=True,
-    background_poly_order=3,
     extraction_size=11,
     background1_size=5,
     background2_size=5,
     background1_offset=-300,
     background2_offset=300,
+    background_poly_order=3,
     overwrite=False,
     output_file_name=None,
 ):
@@ -226,10 +226,6 @@ def extract(
     background_subtract : ``bool``, optional
         Sets whether to apply background subtraction. Default value is True.
 
-    background_poly_order :  ``int``, optional
-        Sets the order of the polynomial used to fit the shape of the
-        background. Default value is 3.
-
     background1_size : ``float``, optional
         Height of the lower background extraction in units of pixels. Default
         value is 5.
@@ -245,6 +241,10 @@ def extract(
     background2_offset : ``float``, optional
         Offset of the upper background extraction in units of pixels. Default
         value is 300.
+
+    background_poly_order :  ``int``, optional
+        Sets the order of the polynomial used to fit the shape of the
+        background. Default value is 3.
 
     overwrite : ``bool``, optional
         Overwrite the output file if it already exists. Default is ``False``.
@@ -296,4 +296,5 @@ def extract(
         bk2size=background2_size,
         bk1offst=background1_offset,
         bk2offst=background2_offset,
+        bksorder=background_poly_order,
     )
