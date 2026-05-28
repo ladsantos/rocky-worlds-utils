@@ -190,6 +190,7 @@ def extract(
     output_dir,
     a2center,
     background_subtract=True,
+    background_poly_order=3,
     extraction_size=11,
     background1_size=5,
     background2_size=5,
@@ -224,6 +225,10 @@ def extract(
 
     background_subtract : ``bool``, optional
         Sets whether to apply background subtraction. Default value is True.
+
+    background_poly_order :  ``int``, optional
+        Sets the order of the polynomial used to fit the shape of the
+        background. Default value is 3.
 
     background1_size : ``float``, optional
         Height of the lower background extraction in units of pixels. Default
