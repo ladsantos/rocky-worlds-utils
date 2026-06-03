@@ -47,7 +47,7 @@ _KEY_LINE_CENTERS = [
     [1238.8, 1242.8, 1371.3, 1145.6],
 ]
 _GEOCORONA_LINE_CENTERS = [
-    1134.415, 1200.223, # N I Lines
+    1134.415, # 1200.223, # N I Lines
     1302.168, 1304.858, 1306.029,  # O I Lines
     1215.6701  # H I line
 ]
@@ -718,10 +718,11 @@ def generate_spec_hlsp(
     hdul.writeto(output_dir + filename)
 
 
-# Mask geocoronal contamination
-def mask_contamination(wavelength, flux, flux_error, mask_width=3.0):
+# Mask geocoronal contamination and low-SNR spectral regions
+def mask(wavelength, flux, flux_error, mask_width=3.0):
     """
-    Remove pixels that are contaminated by geocoronal emission from FUV spectra.
+    Remove pixels that are contaminated by geocoronal emission and low
+    signal-to-noise regions from FUV spectra.
 
     Parameters
     ----------
