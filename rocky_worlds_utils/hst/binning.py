@@ -111,7 +111,8 @@ def fixed_bin_width(wavelength, flux, flux_error, bin_width=1.0):
     resampler = FluxConservingResampler()
     new_spec = resampler(input_spec, binned_wavelength * wave_unit)
     binned_flux = new_spec.flux.value
-    binned_error = new_spec.uncertainty
+    binned_inverse_variance = new_spec.uncertainty.array
+    binned_error = np.sqrt(1.0 / binned_inverse_variance)
 
     return binned_wavelength, binned_flux, binned_error
 
@@ -183,11 +184,11 @@ def adapt(wavelength, flux, flux_error, wavelength_threshold=2750., margin=20.):
                                          up_flux,
                                          left=up_flux[0],
                                          right=up_flux[-1])
-                # up_flux_error_full = np.interp(up_wavelength_full,
-                #                                up_wavelength,
-                #                                up_flux_error,
-                #                                left=up_flux_error[0],
-                #                                right=up_flux_error[-1])
+                up_flux_error_full = np.interp(up_wavelength_full,
+                                               up_wavelength,
+                                               up_flux_error,
+                                               left=up_flux_error[0],
+                                               right=up_flux_error[-1])
             else:
                 up_wavelength_full, up_flux_full, up_flux_error_full = (
                     new_wavelength, new_flux, new_flux_error)
@@ -199,7 +200,7 @@ def adapt(wavelength, flux, flux_error, wavelength_threshold=2750., margin=20.):
                                      wavelength[wavelength > wavelength_threshold]))
     new_flux = np.concatenate((up_flux_full[up_wavelength_full < wavelength_threshold],
                                flux[wavelength > wavelength_threshold]))
-    # new_flux_error = np.concatenate((up_flux_error_full[up_wavelength_full < wavelength_threshold],
-    #                                  up_flux_error[wavelength > wavelength_threshold]))
+    new_flux_error = np.concatenate((up_flux_error_full[up_wavelength_full < wavelength_threshold],
+                                     flux_error[wavelength > wavelength_threshold]))
 
-    return new_wavelength, new_flux#, new_flux_error
+    return new_wavelength, new_flux, new_flux_error
