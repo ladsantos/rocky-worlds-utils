@@ -173,6 +173,9 @@ def timetag_split(
             elif extraction_algorithm == "TWOZONE":
                 header['TRCECORR'] = 'PERFORM'
                 header['ALGNCORR'] = 'PERFORM'
+            else:
+                raise ValueError('Extraction algorithm must be BOXCAR or '
+                                 'TWOZONE.')
         # This loop will rename datasets in the output directory by swapping corrtag and segment
         # example ld9m17d3q_1_corrtag_b.fits ----> ld9m17d3q_1_b_corrtag.fits
         # split_tag.stem prints rootname_split-tag-number_caltype_segment
@@ -303,4 +306,5 @@ def extract(
     output_dir,
     extraction_centers,
     extraction_heights
-):
+    ):
+    pass
