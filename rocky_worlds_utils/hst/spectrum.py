@@ -483,6 +483,7 @@ def generate_spec_hlsp(
     fp_pos=None,
     output_dir="./",
     filename=None,
+    description="Observed spectrum",
     version="1.0",
 ):
     """
@@ -567,6 +568,10 @@ def generate_spec_hlsp(
     filename : ``str``, optional
         Output filename. If ``None``, then the output filename will be
         ``[dataset]_hslp.fits``. Default is ``None``.
+
+    description : ``str``, optional
+        Description of the data. If ``None``, then no description is "Observed
+        spectrum". Default is ``None``.
 
     version : ``str``, optional
         Version of this HLSP, must have a {major}.{minor} format and it must be
@@ -655,7 +660,7 @@ def generate_spec_hlsp(
         ]
     )
 
-    hdu_1.header["DESCRIP"] = ("Observed spectrum", "Description of data")
+    hdu_1.header["DESCRIP"] = (description, "Description of data")
     hdu_1.header["SRC_DOI"] = (source_doi, "DOI for the source data taken from MAST")
     hdu_1.header["SIMULATD"] = (False, "Simulated-data flag")
     hdu_1.header["RA_TARG"] = (
