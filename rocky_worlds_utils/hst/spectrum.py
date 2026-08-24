@@ -32,6 +32,7 @@ __all__ = [
     "plot_lines_hsla",
     "coadd_first_order",
     "generate_spec_hlsp",
+    "mask"
 ]
 
 _KEY_LINE_IDS = [
