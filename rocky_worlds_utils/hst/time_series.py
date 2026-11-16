@@ -652,7 +652,10 @@ def generate_lc_hlsp(
     # Now we deal with the light curves
     # Figure out whether there is only one or more wavelength ranges
     array_shape = np.shape(wavelength_ranges)
-    n_ranges = array_shape[0]
+    if len(array_shape) == 1:
+        n_ranges = 1
+    else:
+        n_ranges = array_shape[0]
 
     # Now calculate the light curve for each wavelength range
     for i in range(n_ranges):
