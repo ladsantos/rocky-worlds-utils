@@ -516,7 +516,7 @@ def generate_lc_hlsp(
     wavelength_ranges : ``numpy.ndarray``
         Array containing the start and end of the wavelength range(s) to be
         integrated. Can be passed as a two-dimensional array containing more
-        than one range, in which case the shape must be (2, N).
+        than one range, in which case the shape must be (N, 2).
 
     source_doi : ``str``
         Source DOI of the observation.
@@ -652,7 +652,7 @@ def generate_lc_hlsp(
     # Now we deal with the light curves
     # Figure out whether there is only one or more wavelength ranges
     array_shape = np.shape(wavelength_ranges)
-    n_ranges = len(array_shape)
+    n_ranges = array_shape[0]
 
     # Now calculate the light curve for each wavelength range
     for i in range(n_ranges):
