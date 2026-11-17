@@ -677,7 +677,7 @@ def generate_lc_hlsp(
 
         # Set units
         time_unit = 'MJD'
-        flux_unit = str(u.erg / (u.s * u.cm ** 2 * u.AA))
+        flux_unit = str(u.erg / (u.s * u.cm ** 2))
         net_unit = 'count / s'
 
         # Set the light curve meta data

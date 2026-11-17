@@ -213,7 +213,7 @@ def get_stis_lsf(grating, aperture, wavelength_region=1200):
 
 # Combine fluxes of non-contiguous wavelength ranges
 def coadd_flux(
-    flux, gross, sensitivity, exposure_time, poisson_interval="sherpagehrels"
+    flux, net, sensitivity, exposure_time, poisson_interval="sherpagehrels"
 ):
     """
     Co-adds fluxes of non-contiguous wavelength ranges.
@@ -226,11 +226,11 @@ def coadd_flux(
         the number of non-contiguous wavelength ranges. Other dimensions (such
         as time) must be second or higher.
 
-    gross : ``numpy.ndarray``
-        Array of gross values in units correspondent to the sensitivity unit
-        (e.g., counts). The first dimension of the array must correspond to  the
-        number of non-contiguous wavelength ranges. Other dimensions (such as
-        time) must be second or higher.
+    net : ``numpy.ndarray``
+        Array of net count rate in units correspondent to the sensitivity unit
+        (e.g., counts / s). The first dimension of the array must correspond to
+        the number of non-contiguous wavelength ranges. Other dimensions (such
+        as time) must be second or higher.
 
     sensitivity : ``numpy.ndarray``
         Array of sensitivity in units of flux/count rate (e.g.,
@@ -263,13 +263,14 @@ def coadd_flux(
     # However, the errors need to be propagate correctly. For that,
     # we need the total gross counts of both wings and the
     # average sensitivity of both bands
-    total_gross = np.sum(gross, axis=0)
+    total_net_count = np.sum(net * exposure_time, axis=0)
     avg_sens = np.sum(sensitivity, axis=0) / n_ranges
-    gross_err_array = (
-        poisson_conf_interval(total_gross, interval=poisson_interval) - total_gross
+    net_err_array = (
+        poisson_conf_interval(np.abs(total_net_count),
+                              interval=poisson_interval) - total_net_count
     )
-    total_err_low = -gross_err_array[0] * avg_sens / exposure_time
-    total_f_err_up = gross_err_array[1] * avg_sens / exposure_time
-    total_f_err = np.array([total_err_low, total_f_err_up])
+    total_err_low = -net_err_array[0] * avg_sens / exposure_time
+    total_f_err_up = net_err_array[1] * avg_sens / exposure_time
+    total_f_err = np.abs(np.array([total_err_low, total_f_err_up]))
 
     return total_flux, total_f_err
